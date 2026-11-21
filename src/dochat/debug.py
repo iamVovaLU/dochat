@@ -1,3 +1,9 @@
+"""
+dochat.debug | 测试(事实上应该叫做test的)
+
+一些用来测试代码性能或之类的东西都代码
+"""
+
 import functools
 from typing import Any
 import time

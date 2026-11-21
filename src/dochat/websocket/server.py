@@ -1,4 +1,9 @@
-import asyncio
+"""
+dochat.websocket.server | 处理客户端连接和业务处理
+"""
+
+import weakref
+from typing import (Any,)
 from loguru import logger
 import json
 from picows.websockets import (
@@ -13,8 +18,12 @@ from picows.websockets import (
 
 from dochat.utils.judge import is_json
 from dochat.errors import (
+    ClientError,
     FormatError,
 )
+
+
+clients: weakref.WeakValueDictionary[str, Any] = weakref.WeakValueDictionary()
 
 def process_request(
     conn: ServerHandshakeConnection,  # pyright: ignore[reportUnusedParameter]
@@ -23,10 +32,9 @@ def process_request(
     """
     用于处理 握手阶段
     (
-        但是绝大多数严重和鉴定都得升级才能进行,
+        但是绝大多数身份和鉴定都得升级才能进行,
         所以握手阶段基本就是摆设,
         最多用来将封禁的IP踢出去,但只有运营过服务器的人才知道封IP屁用没有
-        因为没钱的人在大内网有钱的人有一堆IP或可快速更新大内网设备或大量黑设备
     )
     """
     # conn.username = "test"
@@ -38,6 +46,7 @@ async def handler(ws:ServerConnection):
     """
     logger.opt(colors=True).info("<green>[+]</green> Client-Connection")
     try:
+    
         async for msg in ws:
             if not ( isinstance(msg,str) and is_json(text=msg) ):
                 raise FormatError("What the client sent is not a parsable JSON string.")
@@ -47,6 +56,15 @@ async def handler(ws:ServerConnection):
                 f"[↓] Client-Seed({len(msg)} Chars): [\n{msg[:50]}{'...'if len(msg) > 50 else '' }\n]"
             )
             await ws.send(msg)
+
+    except ClientError as e:
+        # 将因Client导致的错误发送给Client
+        await ws.send(
+            message=json.dumps(obj={
+                "error": type(e).__name__,
+                "message":str(e)
+            })
+        )
     except ConnectionClosedError as exc: # 异常断开
         code = ws.close_code
         logger.warning(
@@ -63,10 +81,11 @@ async def handler(ws:ServerConnection):
         # 我也本不该写这个,我只是为了我日后看得懂
     except Exception: # 兜底
         logger.exception("[X] Unexpected Error...")
+    
     else: # 正常结束/断开
-        logger.opt(colors=True).info("<red>[-]</red> Client-disconnected")
+        logger.opt(colors=True).info("<red>[-]</red> Expected-Client Reset")
     finally: # 收尾工作
-        ...
+        logger.opt(colors=True).info("<red>[⌫]</red> Clear Client")
 
 async def run(
     host: str = "localhost",

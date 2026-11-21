@@ -1,3 +1,10 @@
+"""
+dochat.errors | 自定错误
+
+一些自定义的错误
+"""
+
+
 class DoChatError(Exception):
     """DoChatError(这个项目)所有的自定义报错的基类"""
 

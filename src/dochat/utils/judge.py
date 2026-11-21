@@ -1,3 +1,7 @@
+"""
+dochat.utils.judge | 判断与检查
+"""
+
 import json
 
 def is_json(text:str) -> bool:

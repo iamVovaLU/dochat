@@ -1,3 +1,7 @@
+"""
+dochat.utils.totp | 0依赖的TOTP实现
+"""
+
 import secrets
 import base64
 import hashlib
