@@ -1,0 +1,36 @@
+[project]
+name = "dochat"
+version = "0.1.0"
+description = "Backend service for TaLan's DoChat project"
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [
+    { name = "TaLanFurry", email = "3821743563@qq.com" },
+    { name = "VovaLU", email = "vova1525@foxmail.com" },
+]
+requires-python = ">=3.12.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "aiofiles>=25.1.0",
+    "loguru>=0.8.0",
+    "picows>=2.3.1",
+    "tomlkit>=0.15.2",
+    "uvloop>=0.23.0",
+    "xxhash>=4.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/iamVovaLU/dochat"
+
+[project.scripts]
+dochat = "dochat.main:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
