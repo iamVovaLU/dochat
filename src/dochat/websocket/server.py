@@ -1,6 +1,6 @@
 import asyncio
 from loguru import logger
-
+import json
 from picows.websockets import (
     Request,
     Response,
@@ -9,6 +9,11 @@ from picows.websockets import (
     ConnectionClosedError,
     ConnectionClosedOK,
     serve,
+)
+
+from dochat.utils.judge import is_json
+from dochat.errors import (
+    FormatError,
 )
 
 def process_request(
@@ -34,10 +39,12 @@ async def handler(ws:ServerConnection):
     logger.opt(colors=True).info("<green>[+]</green> Client-Connection")
     try:
         async for msg in ws:
-            logger.info( # Print Message
+            if not ( isinstance(msg,str) and is_json(text=msg) ):
+                raise FormatError("What the client sent is not a parsable JSON string.")
+            data = json.loads(msg)
+            
+            logger.info( # [DEBUG] Print Message(在正式投入生产环境后不应PrintMessage)
                 f"[↓] Client-Seed({len(msg)} Chars): [\n{msg[:50]}{'...'if len(msg) > 50 else '' }\n]"
-                if isinstance(msg,str)
-                else f"[↓] Client-Seed({len(msg)} Bytes)"
             )
             await ws.send(msg)
     except ConnectionClosedError as exc: # 异常断开
@@ -61,7 +68,7 @@ async def handler(ws:ServerConnection):
     finally: # 收尾工作
         ...
 
-async def main(
+async def run(
     host: str = "localhost",
     port: int = 8765
     ):
@@ -79,5 +86,5 @@ async def main(
 
 if __name__ == "__main__":
     import uvloop
-    uvloop.run(main())
+    uvloop.run(run())
     # Glass Animals, IloveUSoFuckingMuch!
