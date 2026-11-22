@@ -8,6 +8,9 @@ dochat.errors | 自定错误
 class DoChatError(Exception):
     """DoChatError(这个项目)所有的自定义报错的基类"""
 
+class UnknownError(DoChatError):
+    """预期之外不知名的错误(无法解释的)"""
+
 # ---- Client
 class ClientError(DoChatError):
     """因客户端(的行为)产生的报错"""

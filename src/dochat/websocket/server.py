@@ -2,10 +2,10 @@
 dochat.websocket.server | 处理客户端连接和业务处理
 """
 
-import weakref
 from typing import (Any,)
 from loguru import logger
 import json
+import uuid
 from picows.websockets import (
     Request,
     Response,
@@ -17,16 +17,19 @@ from picows.websockets import (
 )
 
 from dochat.utils.judge import is_json
+# from dochat.plugin import 
 from dochat.errors import (
     ClientError,
     FormatError,
+    UnknownError,
 )
 
 
-clients: weakref.WeakValueDictionary[str, Any] = weakref.WeakValueDictionary()
+# clients: weakref.WeakValueDictionary[str, Any] = weakref.WeakValueDictionary()
+clients: dict[str, Any] = {} # 用于每个客户端的ID和状态
 
 def process_request(
-    conn: ServerHandshakeConnection,  # pyright: ignore[reportUnusedParameter]
+    conn: ServerHandshakeConnection,
     request: Request,  # pyright: ignore[reportUnusedParameter]
 ) -> Response | None:
     """
@@ -36,16 +39,25 @@ def process_request(
         所以握手阶段基本就是摆设,
         最多用来将封禁的IP踢出去,但只有运营过服务器的人才知道封IP屁用没有
     )
-    简单来说就是这个函数屁用没有,即便你删掉也无所谓
     """
-    # conn.username = "test"
+    conn.username = str(uuid.uuid4())
+    clients[conn.username] = {}
     return None
 
 async def handler(ws:ServerConnection):
     """
     用于处理 握手连接后的处理/业务处理部分
     """
-    logger.opt(colors=True).info("<green>[+]</green> Client-Connection")
+    if ws.username != None: # 类型检查器非得要求我缩小类型范围
+        client = clients[ws.username]
+    else:
+        raise UnknownError
+    
+    logger.opt(colors=True).info(
+        "<green>[+]</green> Client-Connection({})\n    =| Online:{}",
+        ws.username,
+        len(clients.keys())
+        )
     try:
     
         async for msg in ws:
@@ -88,6 +100,7 @@ async def handler(ws:ServerConnection):
     else: # 正常结束/断开
         logger.opt(colors=True).info("<red>[-]</red> Expected-Client Reset")
     finally: # 收尾工作
+        del clients[ws.username]
         logger.opt(colors=True).info("<red>[⌫]</red> Clear Client")
 
 async def run(
