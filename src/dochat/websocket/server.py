@@ -36,6 +36,7 @@ def process_request(
         所以握手阶段基本就是摆设,
         最多用来将封禁的IP踢出去,但只有运营过服务器的人才知道封IP屁用没有
     )
+    简单来说就是这个函数屁用没有,即便你删掉也无所谓
     """
     # conn.username = "test"
     return None
@@ -52,7 +53,7 @@ async def handler(ws:ServerConnection):
                 raise FormatError("What the client sent is not a parsable JSON string.")
             data = json.loads(msg)
             
-            
+
 
             logger.info( # [DEBUG] Print Message(在正式投入生产环境后不应PrintMessage)
                 f"[↓] Client-Seed({len(msg)} Chars): [\n{msg[:50]}{'...'if len(msg) > 50 else '' }\n]"
@@ -109,3 +110,26 @@ if __name__ == "__main__":
     import uvloop
     uvloop.run(run())
     # Glass Animals, IloveUSoFuckingMuch!
+
+
+"""
+In fact, the DoChat project developed by TaLan is not well-standardized.
+(
+At least for the moment—though
+I’ll delete this if things change—the fact that you can still see it means nothing has changed.
+)
+There is no reason—and certainly no justification—for you to use DoChat.
+Since TaLan, as the front-end developer,
+opted for transmitting JSON in plain text—and 
+ecause the server lacks SSL—any message sent from the client 
+(including messages you send to others) can be intercepted and read by a man-in-the-middle.
+It offers absolutely no security whatsoever.
+
+Since you’ve already seen the code, 
+you’ve clearly identified the issues.
+In any case, 
+you really shouldn’t be borrowing any of the code related to communications—though perhaps that never even crossed your mind. 
+On the other hand, 
+you could certainly copy the TOTP implementation;
+that might be the only part actually worth using.
+"""
