@@ -10,7 +10,8 @@ from pathlib import Path
 
 class Paths:
     config: Path = Path(__file__).resolve().parent / "config.toml"
-
+    #
+    default: Path = Path(__file__).resolve().parent / "default"
     plugins: Path = Path(__file__).resolve().parent / "plugins"
 
 

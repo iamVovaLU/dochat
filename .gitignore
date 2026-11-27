@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# config
+src/dochat/config.toml
