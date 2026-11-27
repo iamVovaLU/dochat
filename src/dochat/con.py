@@ -7,10 +7,13 @@ dochat.con | 上下文
 
 from pathlib import Path
 
+
 class Paths:
     config: Path = Path(__file__).resolve().parent / "config.toml"
-    
+
     plugins: Path = Path(__file__).resolve().parent / "plugins"
+
 
 if __name__ == "__main__":
     print(Paths.config)
+
