@@ -128,33 +128,5 @@ async def run(host: str = "localhost", port: int = 8765):
 
 if __name__ == "__main__":
     import uvloop
-
     uvloop.run(run())
     # Glass Animals, IloveUSoFuckingMuch!
-
-
-"""
-In fact, the DoChat project developed by TaLan is not well-standardized.
-(
-At least for the moment—though
-I’ll delete this if things change—the fact that you can still see it means nothing has changed.
-)
-There is no reason—and certainly no justification—for you to use DoChat.
-Since TaLan, as the front-end developer,
-opted for transmitting JSON in plain text—and 
-ecause the server lacks SSL—any message sent from the client 
-(including messages you send to others) can be intercepted and read by a man-in-the-middle.
-It offers absolutely no security whatsoever.
-
-Since you’ve already seen the code, 
-you’ve clearly identified the issues.
-In any case, 
-you really shouldn’t be borrowing any of the code related to communications—though perhaps that never even crossed your mind. 
-On the other hand, 
-you could certainly copy the TOTP implementation;
-that might be the only part actually worth using.
-
-20261127 Today I am trying to persuade TaLan.
-Perhaps I’ll be able to delete this string soon.
-"""
-
